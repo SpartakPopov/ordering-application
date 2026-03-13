@@ -20,6 +20,11 @@ public class OrderController {
         this.menuItemRepository = menuItemRepository;
     }
 
+    @GetMapping("/")
+    public String hello() {
+        return "hello";
+    }
+
     @GetMapping("menu")
     public ResponseEntity<List<MenuItem>> getOrder() {
         List<MenuItem> menuItems = menuItemRepository.findAll();
