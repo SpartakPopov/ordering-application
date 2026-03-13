@@ -2,10 +2,10 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      java: corretto21
     commands:
-      - echo Installing Corretto 25
-      - yum install -y java-25-amazon-corretto-devel
-      - java -version
+      - echo Installing dependencies
 
   pre_build:
     commands:
