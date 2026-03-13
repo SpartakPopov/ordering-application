@@ -3,25 +3,25 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Installing Corretto 25..."
+      - echo Installing Corretto 25
       - yum install -y java-25-amazon-corretto-devel
       - java -version
 
   pre_build:
     commands:
-      - echo "Pre-build started"
+      - echo Pre-build started
 
   build:
     commands:
-      - echo "Build started"
+      - echo Build started
       - mvn clean package -DskipTests
-      - echo "Build completed"
+      - echo Build completed
 
   post_build:
     commands:
-      - echo "Post-build started"
-      - printf 'web: java -jar ordering-app-0.0.1-SNAPSHOT.jar' > Procfile
-      - echo "Post-build completed"
+      - echo Post-build started
+      - echo "web: java -jar ordering-app-0.0.1-SNAPSHOT.jar" > Procfile
+      - echo Post-build completed
 
 artifacts:
   files:
