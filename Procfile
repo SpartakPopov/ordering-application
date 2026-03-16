@@ -1,2 +1,1 @@
-web: java -Dserver.port=5000 -Dspring.datasource.url=jdbc:mysql://ordering-app-db.c7euq48m686w.eu-north-1.rds.amazonaws.com:3306/MenuOptions
--Dspring.datasource.username=root -Dspring.datasource.password=${DB_PASSWORD} -jar ordering-app-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=5000 -Dspring.datasource.url=jdbc:mysql://ordering-app-db.c7euq48m686w.eu-north-1.rds.amazonaws.com:3306/MenuOptions -Dspring.datasource.username=root -Dspring.datasource.password=${DB_PASSWORD} -jar ordering-app-0.0.1-SNAPSHOT.jar
