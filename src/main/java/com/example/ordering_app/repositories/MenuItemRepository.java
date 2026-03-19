@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
-    List<MenuItem> findByType(String type);
-
+    List<MenuItem> findByCategoryId(int categoryId);
 }
