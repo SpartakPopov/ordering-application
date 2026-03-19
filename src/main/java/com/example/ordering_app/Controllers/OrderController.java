@@ -38,4 +38,47 @@ public class OrderController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    // MENU MANAGEMENT
+    // Get /api/menu all items
+    // Get /api/menu/{id} filter by id
+    // Get /api/menu/{type} filter by type
+    // Post /api/menu  Create item (admin)
+    // Put /api/menu/{id} Update item (admin)
+    // Delete /api/menu/{id} Delete item (admin)
+    // Get /api/cathegoties/{id} filter cathegory by id
+    // Post /api/cathegories craete cathegory
+    // Get /api/cathegories/ all cathegories
+    // Patch /api/menu/{id}
+    //
+    // ORDER MANAGEMENT
+    // Phases of order: Order sent --> Order prepared -->Order served
+    // Post /api/orders/
+    // Get /api/orders/{id}
+    // Get /api/orders/session/{session_id}
+    // Post /api/orders/{id}/items
+    // Delete /api/orders/{id}/items/{item_id}
+    // Patch /api/orders/{id}status
+    //
+    // KITCHEN DISPLAY
+    // Get /api/kitchen/queue
+    // Patch /api/kitchen/orders/{id}/prepared
+    // Get /api/kitchen/history
+    //
+    // TABLE MANAGEMENT
+    // Get /api/table
+    // Post /api/table Add a table (admin)
+    // Patch /api/table/{id} Update status (admin)
+    // Delete /api/table/{id} Remove table (admin)
+    //
+    // TABLE SESSION
+    // Post /api/sessiom/activate/{table_id}
+    // Get /api/sessions/validate/{table_id}
+    // Post /api/sessions/close/{table_id}
+    //
+    // PAYMENTS
+    // Post /api/payments
+    // Post /api/payments/{id}/tip
+    // Post /api/payments/{id}/confirm
+    // Get /api/payments/session/{sessionId}
+
 }
