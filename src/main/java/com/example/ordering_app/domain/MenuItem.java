@@ -1,14 +1,16 @@
-package com.example.ordering_app.dto;
+package com.example.ordering_app.domain;
 
-public class MenuItemDTO {
+
+public class MenuItem {
+
     private Integer id;
     private String name;
     private Double price;
     private Integer categoryId;
 
-    public MenuItemDTO() {}
+    public MenuItem() {}
 
-    public MenuItemDTO(Integer id, String name, Double price, Integer categoryId) {
+    public MenuItem(Integer id, String name, Double price, Integer categoryId) {
         this.id = id;
         this.name = name;
         this.price = price;
