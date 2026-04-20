@@ -50,7 +50,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         categoryRepositoryJPA.deleteById(id);
     }
 
-    // --- Conversion methods: Entity <-> Domain ---
 
     private Category toDomain(CategoryEntity entity) {
         List<MenuItem> items = entity.getMenuItems() != null

@@ -56,7 +56,6 @@ public class MenuItemRepositoryImpl implements MenuItemRepository {
         menuItemRepositoryJPA.deleteById(id);
     }
 
-    // --- Conversion methods: Entity <-> Domain ---
 
     private MenuItem toDomain(MenuItemEntity entity) {
         Integer categoryId = entity.getCategory() != null ? entity.getCategory().getId() : null;
