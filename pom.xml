@@ -30,9 +30,6 @@
 		<java.version>21</java.version>
 			<sonar.organization>SpartakPopov</sonar.organization>
 			<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-	</properties>
-	<properties>
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.build.directory}/site/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
