@@ -1,0 +1,145 @@
+package com.example.ordering_app.business.impl;
+
+import com.example.ordering_app.business.OrderService;
+import com.example.ordering_app.domain.Order;
+import com.example.ordering_app.domain.OrderItem;
+import com.example.ordering_app.persistence.MenuItemRepository;
+import com.example.ordering_app.persistence.OrderRepository;
+import com.example.ordering_app.persistence.impl.OrderItemRepositoryJPA;
+import com.example.ordering_app.persistence.entity.OrderItemEntity;
+import com.example.ordering_app.websocket.KitchenWebSocketService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    private final OrderRepository orderRepository;
+    private final MenuItemRepository menuItemRepository;
+    private final OrderItemRepositoryJPA orderItemRepositoryJPA;
+    private final KitchenWebSocketService kitchenWebSocketService;
+
+    public OrderServiceImpl(OrderRepository orderRepository,
+                            MenuItemRepository menuItemRepository,
+                            OrderItemRepositoryJPA orderItemRepositoryJPA,
+                            KitchenWebSocketService kitchenWebSocketService) {
+        this.orderRepository = orderRepository;
+        this.menuItemRepository = menuItemRepository;
+        this.orderItemRepositoryJPA = orderItemRepositoryJPA;
+        this.kitchenWebSocketService = kitchenWebSocketService;
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public Optional<Order> getOrderById(int id) {
+        return orderRepository.findById(id);
+    }
+
+    @Override
+    public Order createOrder(Order order) {
+        // order must have at least one item
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            throw new IllegalArgumentException("An order must contain at least one item");
+        }
+
+        for (OrderItem item : order.getItems()) {
+            if (item.getQuantity() == null || item.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Quantity must be greater than 0");
+            }
+
+            menuItemRepository.findById(item.getMenuItemId())
+                    .ifPresentOrElse(menuItem -> {
+                        item.setMenuItemName(menuItem.getName());
+                        item.setMenuItemPrice(menuItem.getPrice());
+                        item.setSubtotal(menuItem.getPrice() * item.getQuantity());
+                        item.setStatus("PENDING");
+                    }, () -> {
+                        throw new IllegalArgumentException(
+                                "Menu item not found with id: " + item.getMenuItemId()
+                        );
+                    });
+        }
+
+
+        double totalPrice = order.getItems().stream()
+                .mapToDouble(OrderItem::getSubtotal)
+                .sum();
+
+        order.setTotalPrice(totalPrice);
+        order.setStatus("PENDING");
+
+        Order saved = orderRepository.save(order);
+
+
+        kitchenWebSocketService.broadcastNewOrder(saved);
+
+        return saved;
+    }
+
+    @Override
+    public Optional<OrderItem> markItemDone(int orderId, int itemId) {
+        // Find the item entity directly
+        Optional<OrderItemEntity> entityOpt = orderItemRepositoryJPA.findById(itemId);
+
+        if (entityOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        OrderItemEntity itemEntity = entityOpt.get();
+
+        // Make sure the item belongs to the correct order
+        if (!itemEntity.getOrder().getId().equals(orderId)) {
+            return Optional.empty();
+        }
+
+        // Mark item as done
+        itemEntity.setStatus("DONE");
+        orderItemRepositoryJPA.save(itemEntity);
+
+        // Convert to domain for broadcasting
+        OrderItem updatedItem = new OrderItem(
+                itemEntity.getId(),
+                itemEntity.getMenuItemId(),
+                itemEntity.getMenuItemName(),
+                itemEntity.getMenuItemPrice(),
+                itemEntity.getQuantity(),
+                itemEntity.getSubtotal(),
+                "DONE"
+        );
+
+        // Broadcast item done to all kitchen screens
+        kitchenWebSocketService.broadcastItemDone(orderId, updatedItem);
+
+        // Check if ALL items in this order are now done
+        boolean allDone = itemEntity.getOrder().getItems().stream()
+                .allMatch(i -> "DONE".equals(i.getStatus()));
+
+        if (allDone) {
+            // Update order status to COMPLETED
+            orderRepository.findById(orderId).ifPresent(order -> {
+                order.setStatus("COMPLETED");
+                orderRepository.save(order);
+            });
+            // Broadcast order completed to all kitchen screens
+            kitchenWebSocketService.broadcastOrderCompleted(orderId);
+        }
+
+        return Optional.of(updatedItem);
+    }
+
+    @Override
+    public boolean cancelOrder(int id) {
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+}
