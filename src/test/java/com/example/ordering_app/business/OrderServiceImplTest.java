@@ -6,6 +6,7 @@ import com.example.ordering_app.domain.Order;
 import com.example.ordering_app.domain.OrderItem;
 import com.example.ordering_app.persistence.MenuItemRepository;
 import com.example.ordering_app.persistence.OrderRepository;
+import com.example.ordering_app.websocket.KitchenWebSocketService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,9 @@ class OrderServiceImplTest {
 
     @Mock
     private MenuItemRepository menuItemRepository;
+
+    @Mock
+    private KitchenWebSocketService kitchenWebSocketService;
 
     @InjectMocks
     private OrderServiceImpl orderService;
