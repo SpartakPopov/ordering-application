@@ -85,7 +85,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<OrderItem> markItemDone(int orderId, int itemId) {
-        // Find the item entity directly
         Optional<OrderItemEntity> entityOpt = orderItemRepositoryJPA.findById(itemId);
 
         if (entityOpt.isEmpty()) {
@@ -94,12 +93,11 @@ public class OrderServiceImpl implements OrderService {
 
         OrderItemEntity itemEntity = entityOpt.get();
 
-        // Make sure the item belongs to the correct order
+
         if (!itemEntity.getOrder().getId().equals(orderId)) {
             return Optional.empty();
         }
 
-        // Mark item as done
         itemEntity.setStatus("DONE");
         orderItemRepositoryJPA.save(itemEntity);
 
@@ -117,17 +115,14 @@ public class OrderServiceImpl implements OrderService {
         // Broadcast item done to all kitchen screens
         kitchenWebSocketService.broadcastItemDone(orderId, updatedItem);
 
-        // Check if ALL items in this order are now done
         boolean allDone = itemEntity.getOrder().getItems().stream()
                 .allMatch(i -> "DONE".equals(i.getStatus()));
 
         if (allDone) {
-            // Update order status to COMPLETED
             orderRepository.findById(orderId).ifPresent(order -> {
                 order.setStatus("COMPLETED");
                 orderRepository.save(order);
             });
-            // Broadcast order completed to all kitchen screens
             kitchenWebSocketService.broadcastOrderCompleted(orderId);
         }
 
