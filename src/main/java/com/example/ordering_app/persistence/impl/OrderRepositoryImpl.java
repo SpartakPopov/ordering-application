@@ -35,9 +35,9 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Order save(Order order) {
-        OrderEntity entity = toEntity(order);
-        OrderEntity saved = orderRepositoryJPA.save(entity);
-        return toDomain(saved);
+        OrderEntity entity = toEntity(order); // convert domain to entity
+        OrderEntity saved = orderRepositoryJPA.save(entity); // hibernate generates ID
+        return toDomain(saved); // convert entity back to domain
     }
 
     @Override
@@ -95,6 +95,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         entity.setMenuItemPrice(item.getMenuItemPrice());
         entity.setQuantity(item.getQuantity());
         entity.setSubtotal(item.getSubtotal());
+        entity.setStatus(item.getStatus());
         entity.setOrder(orderEntity);
         return entity;
     }

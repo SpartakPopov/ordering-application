@@ -7,14 +7,16 @@ public class MenuItemDTO {
     private String name;
     private Double price;
     private Integer categoryId;
+    private String imageUrl;
 
     public MenuItemDTO() {}
 
-    public MenuItemDTO(Integer id, String name, Double price, Integer categoryId) {
+    public MenuItemDTO(Integer id, String name, Double price, Integer categoryId, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.categoryId = categoryId;
+        this.imageUrl = imageUrl;
     }
 
     public Integer getId() { return id; }
@@ -25,4 +27,6 @@ public class MenuItemDTO {
     public void setPrice(Double price) { this.price = price; }
     public Integer getCategoryId() { return categoryId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

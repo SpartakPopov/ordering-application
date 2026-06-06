@@ -6,13 +6,15 @@ public class CreateMenuItemRequest {
     private String name;
     private Double price;
     private Integer categoryId;
+    private String imageUrl;
 
     public CreateMenuItemRequest() {}
 
-    public CreateMenuItemRequest(String name, Double price, Integer categoryId) {
+    public CreateMenuItemRequest(String name, Double price, Integer categoryId, String imageUrl) {
         this.name = name;
         this.price = price;
         this.categoryId = categoryId;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() { return name; }
@@ -21,4 +23,6 @@ public class CreateMenuItemRequest {
     public void setPrice(Double price) { this.price = price; }
     public Integer getCategoryId() { return categoryId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

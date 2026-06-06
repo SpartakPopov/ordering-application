@@ -15,6 +15,10 @@ public interface OrderService {
 
     Order createOrder(Order order);
 
+    Optional<Order> startOrder(int orderId);
+
+    Optional<OrderItem> markItemInProgress(int orderId, int itemId);
+
     Optional<OrderItem> markItemDone(int orderId, int itemId);
 
     boolean cancelOrder(int id);

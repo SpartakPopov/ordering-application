@@ -23,7 +23,7 @@ public class KitchenWebSocketService {
         Map<String, Object> message = new HashMap<>();
         message.put("type", "NEW_ORDER");
         message.put("payload", order);
-        messagingTemplate.convertAndSend("/topic/kitchen", (Object) message);
+        messagingTemplate.convertAndSend("/topic/kitchen", (Object) message); // push message to all subscribed to /topic/kitchen
     }
 
 
@@ -37,6 +37,25 @@ public class KitchenWebSocketService {
         messagingTemplate.convertAndSend("/topic/kitchen", (Object) message);
     }
 
+
+    public void broadcastItemInProgress(int orderId, OrderItem item) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("type", "ITEM_IN_PROGRESS");
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("orderId", orderId);
+        payload.put("item", item);
+        message.put("payload", payload);
+        messagingTemplate.convertAndSend("/topic/kitchen", (Object) message);
+    }
+
+    public void broadcastOrderInProgress(int orderId) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("type", "ORDER_IN_PROGRESS");
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("orderId", orderId);
+        message.put("payload", payload);
+        messagingTemplate.convertAndSend("/topic/kitchen", (Object) message);
+    }
 
     public void broadcastOrderCompleted(int orderId) {
         Map<String, Object> message = new HashMap<>();

@@ -31,6 +31,6 @@ public class CategoryMapper {
     }
 
     private static MenuItemDTO menuItemToDTO(MenuItem item) {
-        return new MenuItemDTO(item.getId(), item.getName(), item.getPrice(), item.getCategoryId());
+        return new MenuItemDTO(item.getId(), item.getName(), item.getPrice(), item.getCategoryId(), item.getImageUrl());
     }
 }

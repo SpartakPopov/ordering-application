@@ -7,6 +7,7 @@ public class MenuItem {
     private String name;
     private Double price;
     private Integer categoryId;
+    private String imageUrl;
 
     public MenuItem() {}
 
@@ -25,4 +26,6 @@ public class MenuItem {
     public void setPrice(Double price) { this.price = price; }
     public Integer getCategoryId() { return categoryId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

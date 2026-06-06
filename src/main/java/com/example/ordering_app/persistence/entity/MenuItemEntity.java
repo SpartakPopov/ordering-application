@@ -13,6 +13,7 @@ public class MenuItemEntity {
 
     private String name;
     private Double price;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -32,6 +33,8 @@ public class MenuItemEntity {
     public void setName(String name) { this.name = name; }
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public CategoryEntity getCategory() { return category; }
     public void setCategory(CategoryEntity category) { this.category = category; }
 }

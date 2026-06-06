@@ -41,20 +41,38 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderRequest request) {
-        Order domain = OrderMapper.toDomain(request);
-        Order saved = orderService.createOrder(domain);
+        Order domain = OrderMapper.toDomain(request);  //convert to domain object
+        Order saved = orderService.createOrder(domain); 
         return ResponseEntity.ok(OrderMapper.toDTO(saved));
     }
 
+
+    @PatchMapping("/{orderId}/start")
+    public ResponseEntity<OrderDTO> startOrder(@PathVariable int orderId) {
+        return orderService.startOrder(orderId)
+                .map(OrderMapper::toDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{orderId}/items/{itemId}/start")
+    public ResponseEntity<OrderItemDTO> markItemInProgress(
+            @PathVariable int orderId,
+            @PathVariable int itemId) {
+        return orderService.markItemInProgress(orderId, itemId)
+                .map(OrderMapper::orderItemToDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PatchMapping("/{orderId}/items/{itemId}/done")
     public ResponseEntity<OrderItemDTO> markItemDone(
             @PathVariable int orderId,
             @PathVariable int itemId) {
         return orderService.markItemDone(orderId, itemId)
-                .map(OrderMapper::orderItemToDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(OrderMapper::orderItemToDTO) // convert to DTO
+                .map(ResponseEntity::ok) //wrap in 200 OK
+                .orElse(ResponseEntity.notFound().build()); // 404 if item doesnt exist
     }
 
     @DeleteMapping("/{id}")

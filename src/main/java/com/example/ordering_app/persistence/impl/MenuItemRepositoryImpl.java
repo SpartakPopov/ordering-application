@@ -59,7 +59,9 @@ public class MenuItemRepositoryImpl implements MenuItemRepository {
 
     private MenuItem toDomain(MenuItemEntity entity) {
         Integer categoryId = entity.getCategory() != null ? entity.getCategory().getId() : null;
-        return new MenuItem(entity.getId(), entity.getName(), entity.getPrice(), categoryId);
+        MenuItem item = new MenuItem(entity.getId(), entity.getName(), entity.getPrice(), categoryId);
+        item.setImageUrl(entity.getImageUrl());
+        return item;
     }
 
     private MenuItemEntity toEntity(MenuItem menuItem) {
@@ -67,6 +69,7 @@ public class MenuItemRepositoryImpl implements MenuItemRepository {
         entity.setId(menuItem.getId());
         entity.setName(menuItem.getName());
         entity.setPrice(menuItem.getPrice());
+        entity.setImageUrl(menuItem.getImageUrl());
         if (menuItem.getCategoryId() != null) {
             CategoryEntity category = new CategoryEntity();
             category.setId(menuItem.getCategoryId());

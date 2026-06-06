@@ -13,6 +13,7 @@ public class MenuItemMapper {
         item.setName(request.getName());
         item.setPrice(request.getPrice());
         item.setCategoryId(request.getCategoryId());
+        item.setImageUrl(request.getImageUrl());
         return item;
     }
 
@@ -22,14 +23,15 @@ public class MenuItemMapper {
         item.setName(dto.getName());
         item.setPrice(dto.getPrice());
         item.setCategoryId(dto.getCategoryId());
+        item.setImageUrl(dto.getImageUrl());
         return item;
     }
 
     public static CreateMenuItemResponse toCreateResponse(MenuItem item) {
-        return new CreateMenuItemResponse(item.getId(), item.getName(), item.getPrice(), item.getCategoryId());
+        return new CreateMenuItemResponse(item.getId(), item.getName(), item.getPrice(), item.getCategoryId(), item.getImageUrl());
     }
 
     public static MenuItemDTO toDTO(MenuItem item) {
-        return new MenuItemDTO(item.getId(), item.getName(), item.getPrice(), item.getCategoryId());
+        return new MenuItemDTO(item.getId(), item.getName(), item.getPrice(), item.getCategoryId(), item.getImageUrl());
     }
 }
