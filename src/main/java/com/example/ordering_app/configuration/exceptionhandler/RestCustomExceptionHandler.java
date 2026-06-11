@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.Map;
 
 
-@ControllerAdvice
+@ControllerAdvice // intercept exceptions from ALL controllers
 public class RestCustomExceptionHandler {
 
-    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    @ExceptionHandler(CategoryAlreadyExistsException.class)  // catch this specific exception type
     public ResponseEntity<Map<String, String>> handleCategoryAlreadyExists(CategoryAlreadyExistsException ex) {
+        // Spring passes the thrown exception in
+
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(Map.of("error", ex.getMessage()));
+                .status(HttpStatus.CONFLICT) // send HTTP 409 — "resource already exists"
+                .body(Map.of("error", ex.getMessage())); // JSON body: { "error": "..." }
     }
 
     @ExceptionHandler(MenuItemAlreadyExistsException.class)

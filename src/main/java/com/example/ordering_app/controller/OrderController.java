@@ -42,8 +42,8 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderRequest request) {
         Order domain = OrderMapper.toDomain(request);  //convert to domain object
-        Order saved = orderService.createOrder(domain); 
-        return ResponseEntity.ok(OrderMapper.toDTO(saved));
+        Order saved = orderService.createOrder(domain); // delegate to service
+        return ResponseEntity.ok(OrderMapper.toDTO(saved)); // map domain to DTO
     }
 
 

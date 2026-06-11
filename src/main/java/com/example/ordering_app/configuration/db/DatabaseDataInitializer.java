@@ -2,9 +2,13 @@ package com.example.ordering_app.configuration.db;
 
 import com.example.ordering_app.persistence.entity.CategoryEntity;
 import com.example.ordering_app.persistence.entity.MenuItemEntity;
+import com.example.ordering_app.persistence.entity.UserEntity;
 import com.example.ordering_app.persistence.impl.CategoryRepositoryJPA;
 import com.example.ordering_app.persistence.impl.MenuItemRepositoryJPA;
+import com.example.ordering_app.persistence.impl.UserRepositoryJPA;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,15 +19,43 @@ public class DatabaseDataInitializer implements CommandLineRunner {
 
     private final CategoryRepositoryJPA categoryRepositoryJPA;
     private final MenuItemRepositoryJPA menuItemRepositoryJPA;
+    private final UserRepositoryJPA userRepositoryJPA;
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.default-manager-password}")
+    private String defaultManagerPassword;
+
+    @Value("${app.default-kitchen-password}")
+    private String defaultKitchenPassword;
 
     public DatabaseDataInitializer(CategoryRepositoryJPA categoryRepositoryJPA,
-                                   MenuItemRepositoryJPA menuItemRepositoryJPA) {
+                                   MenuItemRepositoryJPA menuItemRepositoryJPA,
+                                   UserRepositoryJPA userRepositoryJPA,
+                                   PasswordEncoder passwordEncoder) {
         this.categoryRepositoryJPA = categoryRepositoryJPA;
         this.menuItemRepositoryJPA = menuItemRepositoryJPA;
+        this.userRepositoryJPA = userRepositoryJPA;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
+        // Seed default accounts if they don't already exist
+        if (userRepositoryJPA.findByUsername("manager").isEmpty()) {
+            userRepositoryJPA.save(new UserEntity(
+                    "manager",
+                    passwordEncoder.encode(defaultManagerPassword),
+                    "ROLE_MANAGER"
+            ));
+        }
+        if (userRepositoryJPA.findByUsername("kitchen").isEmpty()) {
+            userRepositoryJPA.save(new UserEntity(
+                    "kitchen",
+                    passwordEncoder.encode(defaultKitchenPassword),
+                    "ROLE_KITCHEN"
+            ));
+        }
+
         if (categoryRepositoryJPA.count() > 0) return;
 
         // ── Categories ──────────────────────────────────────────────
