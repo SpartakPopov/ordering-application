@@ -40,21 +40,19 @@ public class DatabaseDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Seed default accounts if they don't already exist
-        if (userRepositoryJPA.findByUsername("manager").isEmpty()) {
-            userRepositoryJPA.save(new UserEntity(
-                    "manager",
-                    passwordEncoder.encode(defaultManagerPassword),
-                    "ROLE_MANAGER"
-            ));
-        }
-        if (userRepositoryJPA.findByUsername("kitchen").isEmpty()) {
-            userRepositoryJPA.save(new UserEntity(
-                    "kitchen",
-                    passwordEncoder.encode(defaultKitchenPassword),
-                    "ROLE_KITCHEN"
-            ));
-        }
+        // Always reset default accounts so passwords stay in sync with config
+        userRepositoryJPA.findByUsername("manager").ifPresent(userRepositoryJPA::delete);
+        userRepositoryJPA.findByUsername("kitchen").ifPresent(userRepositoryJPA::delete);
+        userRepositoryJPA.save(new UserEntity(
+                "manager",
+                passwordEncoder.encode(defaultManagerPassword),
+                "ROLE_MANAGER"
+        ));
+        userRepositoryJPA.save(new UserEntity(
+                "kitchen",
+                passwordEncoder.encode(defaultKitchenPassword),
+                "ROLE_KITCHEN"
+        ));
 
         if (categoryRepositoryJPA.count() > 0) return;
 

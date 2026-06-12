@@ -41,7 +41,10 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
         }
 
-        String token = jwtUtils.generateToken(user.getUsername(), user.getRole());
+        long expirationMs = "ROLE_KITCHEN".equals(user.getRole())
+                ? 10L * 60 * 60 * 1000   // 10 hours for kitchen staff
+                :  1L * 60 * 60 * 1000;  //  1 hour  for manager
+        String token = jwtUtils.generateToken(user.getUsername(), user.getRole(), expirationMs);
         return ResponseEntity.ok(Map.of("token", token, "role", user.getRole()));
     }
 }
