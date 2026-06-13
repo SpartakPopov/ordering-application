@@ -7,7 +7,7 @@ public class CreateOrderRequest {
 
     private List<OrderItemRequest> items;
 
-    public CreateOrderRequest() {}
+    public CreateOrderRequest() { /* required by Jackson for JSON deserialisation */ }
 
     public List<OrderItemRequest> getItems() { return items; }
     public void setItems(List<OrderItemRequest> items) { this.items = items; }
@@ -16,7 +16,7 @@ public class CreateOrderRequest {
         private Integer menuItemId;
         private Integer quantity;
 
-        public OrderItemRequest() {}
+        public OrderItemRequest() { /* required by Jackson for JSON deserialisation */ }
 
         public Integer getMenuItemId() { return menuItemId; }
         public void setMenuItemId(Integer menuItemId) { this.menuItemId = menuItemId; }

@@ -1,6 +1,5 @@
 package com.example.ordering_app.security;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,10 +30,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
-            String token  = header.substring(7); // strip "Bearer " prefix
-            Claims claims = jwtUtils.validateAndParse(token);
-
-            if (claims != null) {
+            String token = header.substring(7); // strip "Bearer " prefix
+            jwtUtils.validateAndParse(token).ifPresent(claims -> {
                 String username = claims.getSubject();
                 String role     = claims.get("role", String.class);
 
@@ -46,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                 List.of(new SimpleGrantedAuthority(role))
                         );
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            }
+            });
         }
 
         chain.doFilter(request, response); // continue to the next filter / controller

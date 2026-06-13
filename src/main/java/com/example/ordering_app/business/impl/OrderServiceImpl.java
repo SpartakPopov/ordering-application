@@ -17,6 +17,11 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final String STATUS_PENDING = "PENDING";
+    private static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
+    private static final String STATUS_DONE = "DONE";
+    private static final String STATUS_COMPLETED = "COMPLETED";
+
     private final OrderRepository orderRepository;
     private final MenuItemRepository menuItemRepository;
     private final OrderItemRepositoryJPA orderItemRepositoryJPA;
@@ -58,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
                         item.setMenuItemName(menuItem.getName()); // look up real name form DB
                         item.setMenuItemPrice(menuItem.getPrice()); // look up real price from DB
                         item.setSubtotal(menuItem.getPrice() * item.getQuantity()); // calculate subtotal
-                        item.setStatus("PENDING"); // set initial status
+                        item.setStatus(STATUS_PENDING); // set initial status
                     }, () -> {
                         throw new IllegalArgumentException(
                                 "Menu item not found with id: " + item.getMenuItemId()
@@ -72,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 .sum(); // sum all subtotals to get total price
 
         order.setTotalPrice(totalPrice);
-        order.setStatus("PENDING");
+        order.setStatus(STATUS_PENDING);
 
         Order saved = orderRepository.save(order); // persist everything to DB
 
@@ -88,9 +93,9 @@ public class OrderServiceImpl implements OrderService {
         if (orderOpt.isEmpty()) return Optional.empty();
 
         Order order = orderOpt.get();
-        if (!"PENDING".equals(order.getStatus())) return Optional.empty();
+        if (!STATUS_PENDING.equals(order.getStatus())) return Optional.empty();
 
-        order.setStatus("IN_PROGRESS");
+        order.setStatus(STATUS_IN_PROGRESS);
         Order saved = orderRepository.save(order);
         kitchenWebSocketService.broadcastOrderInProgress(orderId);
         return Optional.of(saved);
@@ -104,13 +109,13 @@ public class OrderServiceImpl implements OrderService {
         OrderItemEntity itemEntity = entityOpt.get();
         if (!itemEntity.getOrder().getId().equals(orderId)) return Optional.empty();
 
-        itemEntity.setStatus("IN_PROGRESS");
+        itemEntity.setStatus(STATUS_IN_PROGRESS);
         orderItemRepositoryJPA.save(itemEntity);
 
         // If the order is still PENDING, promote it to IN_PROGRESS
         orderRepository.findById(orderId).ifPresent(order -> {
-            if ("PENDING".equals(order.getStatus())) {
-                order.setStatus("IN_PROGRESS");
+            if (STATUS_PENDING.equals(order.getStatus())) {
+                order.setStatus(STATUS_IN_PROGRESS);
                 orderRepository.save(order);
             }
         });
@@ -144,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
             return Optional.empty();
         } // item must belong to the order
 
-        itemEntity.setStatus("DONE");
+        itemEntity.setStatus(STATUS_DONE);
         orderItemRepositoryJPA.save(itemEntity); // save DONE status to DB
 
         // Convert to domain for broadcasting
@@ -155,18 +160,18 @@ public class OrderServiceImpl implements OrderService {
                 itemEntity.getMenuItemPrice(),
                 itemEntity.getQuantity(),
                 itemEntity.getSubtotal(),
-                "DONE"
+                STATUS_DONE
         );
 
         // Broadcast item done to all kitchen screens
         kitchenWebSocketService.broadcastItemDone(orderId, updatedItem);
 
         boolean allDone = itemEntity.getOrder().getItems().stream()
-                .allMatch(i -> "DONE".equals(i.getStatus())); // check if every item in order is DONE
+                .allMatch(i -> STATUS_DONE.equals(i.getStatus())); // check if every item in order is DONE
 
         if (allDone) {
             orderRepository.findById(orderId).ifPresent(order -> {
-                order.setStatus("COMPLETED");
+                order.setStatus(STATUS_COMPLETED);
                 orderRepository.save(order); // if DONE mark it in DB
             });
             kitchenWebSocketService.broadcastOrderCompleted(orderId); // broadcast order COMPLETE

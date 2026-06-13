@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -27,7 +26,7 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<OrderDTO> dtos = orderService.getAllOrders().stream()
                 .map(OrderMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 

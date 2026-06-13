@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -24,7 +23,7 @@ public class MenuItemRepositoryImpl implements MenuItemRepository {
     public List<MenuItem> findAll() {
         return menuItemRepositoryJPA.findAll().stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -36,7 +35,7 @@ public class MenuItemRepositoryImpl implements MenuItemRepository {
     public List<MenuItem> findByCategoryId(int categoryId) {
         return menuItemRepositoryJPA.findByCategoryId(categoryId).stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

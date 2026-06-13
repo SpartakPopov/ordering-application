@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -25,7 +24,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     public List<Order> findAll() {
         return orderRepositoryJPA.findAll().stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -55,7 +54,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         List<OrderItem> items = entity.getItems() != null
                 ? entity.getItems().stream()
                 .map(this::orderItemToDomain)
-                .collect(Collectors.toList())
+                .toList()
                 : List.of();
         return new Order(entity.getId(), items, entity.getStatus(), entity.getTotalPrice());
     }
@@ -81,7 +80,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         if (order.getItems() != null) {
             List<OrderItemEntity> itemEntities = order.getItems().stream()
                     .map(item -> orderItemToEntity(item, entity))
-                    .collect(Collectors.toList());
+                    .toList();
             entity.setItems(itemEntities);
         }
         return entity;

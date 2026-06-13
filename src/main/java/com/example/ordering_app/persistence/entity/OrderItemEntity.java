@@ -22,7 +22,7 @@ public class OrderItemEntity {
     @JoinColumn(name = "order_id")
     private OrderEntity order;
 
-    public OrderItemEntity() {}
+    public OrderItemEntity() { /* required by JPA */ }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }

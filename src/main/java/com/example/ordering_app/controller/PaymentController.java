@@ -7,7 +7,8 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.model.Event;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
-import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +19,18 @@ import java.util.Map;
 @RequestMapping("/api/payments")
 public class PaymentController {
 
-    @Value("${stripe.secret-key}")
-    private String secretKey;
+    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 
-    @Value("${stripe.webhook-secret}")
-    private String webhookSecret;
+    private final String webhookSecret;
+    private final String publishableKey;
 
-    @Value("${stripe.publishable-key}")
-    private String publishableKey;
-
-    @PostConstruct
-    public void init() {
+    public PaymentController(
+            @Value("${stripe.secret-key}") String secretKey,
+            @Value("${stripe.webhook-secret}") String webhookSecret,
+            @Value("${stripe.publishable-key}") String publishableKey) {
         Stripe.apiKey = secretKey;
+        this.webhookSecret = webhookSecret;
+        this.publishableKey = publishableKey;
     }
 
     // Returns the publishable key so the frontend can initialize Stripe.js
@@ -77,10 +78,10 @@ public class PaymentController {
         switch (event.getType()) {
             case "payment_intent.succeeded":
                 // TODO: mark the linked order as PAID in the database
-                System.out.println("Payment succeeded: " + event.getId());
+                log.info("Payment succeeded: {}", event.getId());
                 break;
             case "payment_intent.payment_failed":
-                System.out.println("Payment failed: " + event.getId());
+                log.warn("Payment failed: {}", event.getId());
                 break;
             default:
                 // Ignore unhandled event types

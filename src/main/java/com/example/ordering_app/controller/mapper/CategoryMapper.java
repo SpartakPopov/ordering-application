@@ -5,10 +5,11 @@ import com.example.ordering_app.domain.Category;
 import com.example.ordering_app.domain.MenuItem;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class CategoryMapper {
+
+    private CategoryMapper() { /* utility class — do not instantiate */ }
 
     public static Category toDomain(CreateCategoryRequest request) {
         Category category = new Category();
@@ -24,7 +25,7 @@ public class CategoryMapper {
         List<MenuItemDTO> itemDTOs = category.getMenuItems() != null
                 ? category.getMenuItems().stream()
                 .map(CategoryMapper::menuItemToDTO)
-                .collect(Collectors.toList())
+                .toList()
                 : List.of();
 
         return new CategoryDTO(category.getId(), category.getName(), itemDTOs);

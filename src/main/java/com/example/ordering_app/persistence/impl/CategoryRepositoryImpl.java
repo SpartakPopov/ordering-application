@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -25,7 +24,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public List<Category> findAll() {
         return categoryRepositoryJPA.findAll().stream()
                 .map(this::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         List<MenuItem> items = entity.getMenuItems() != null
                 ? entity.getMenuItems().stream()
                 .map(this::menuItemToDomain)
-                .collect(Collectors.toList())
+                .toList()
                 : List.of();
 
         return new Category(entity.getId(), entity.getName(), items);

@@ -18,7 +18,7 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OrderItemEntity> items;
 
-    public OrderEntity() {}
+    public OrderEntity() { /* required by JPA */ }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }

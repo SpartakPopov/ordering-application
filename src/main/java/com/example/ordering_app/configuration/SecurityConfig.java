@@ -17,6 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String API_MENU_PATH = "/api/menu/**";
+    private static final String ROLE_MANAGER = "MANAGER";
+
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
@@ -24,6 +27,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @SuppressWarnings("java:S112") // throws Exception is required by Spring's SecurityFilterChain API
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // JWT is stateless — no session needed
@@ -46,9 +50,9 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll()
 
                 // Protected — only authenticated managers can modify the menu
-                .requestMatchers(HttpMethod.POST,   "/api/menu/**").hasRole("MANAGER")
-                .requestMatchers(HttpMethod.DELETE, "/api/menu/**").hasRole("MANAGER")
-                .requestMatchers(HttpMethod.PATCH,  "/api/menu/**").hasRole("MANAGER")
+                .requestMatchers(HttpMethod.POST,   API_MENU_PATH).hasRole(ROLE_MANAGER)
+                .requestMatchers(HttpMethod.DELETE, API_MENU_PATH).hasRole(ROLE_MANAGER)
+                .requestMatchers(HttpMethod.PATCH,  API_MENU_PATH).hasRole(ROLE_MANAGER)
 
                 // Everything else requires authentication
                 .anyRequest().authenticated()

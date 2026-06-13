@@ -7,10 +7,11 @@ import com.example.ordering_app.domain.Order;
 import com.example.ordering_app.domain.OrderItem;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class OrderMapper {
+
+    private OrderMapper() { /* utility class — do not instantiate */ }
 
     public static Order toDomain(CreateOrderRequest request) {
         List<OrderItem> items = request.getItems().stream()
@@ -20,7 +21,7 @@ public class OrderMapper {
                     item.setQuantity(itemReq.getQuantity());
                     return item;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         Order order = new Order();
         order.setItems(items);
@@ -30,7 +31,7 @@ public class OrderMapper {
     public static OrderDTO toDTO(Order order) {
         List<OrderItemDTO> itemDTOs = order.getItems().stream()
                 .map(OrderMapper::orderItemToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return new OrderDTO(
                 order.getId(),

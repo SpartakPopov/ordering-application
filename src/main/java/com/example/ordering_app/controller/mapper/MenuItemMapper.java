@@ -8,6 +8,8 @@ import com.example.ordering_app.domain.MenuItem;
 
 public class MenuItemMapper {
 
+    private MenuItemMapper() { /* utility class — do not instantiate */ }
+
     public static MenuItem toDomain(CreateMenuItemRequest request) {
         MenuItem item = new MenuItem();
         item.setName(request.getName());

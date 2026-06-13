@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -27,7 +26,7 @@ public class MenuController {
     public ResponseEntity<List<MenuItemDTO>> getAllMenuItems() {
         List<MenuItemDTO> dtos = menuItemService.getAllMenuItems().stream()
                 .map(MenuItemMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 
@@ -35,7 +34,7 @@ public class MenuController {
     public ResponseEntity<List<MenuItemDTO>> getMenuItemsByCategory(@PathVariable int categoryId) {
         List<MenuItemDTO> dtos = menuItemService.getMenuItemsByCategoryId(categoryId).stream()
                 .map(MenuItemMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 

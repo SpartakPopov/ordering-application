@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 
 @Component // register this as a Spring bean so it can be injected elsewhere
 public class JwtUtils {
@@ -42,16 +43,16 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Returns null if the token is invalid or expired
-    public Claims validateAndParse(String token) {
+    public Optional<Claims> validateAndParse(String token) {
         try {
-            return Jwts.parser()
+            Claims claims = Jwts.parser()
                     .verifyWith(key)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
+            return Optional.of(claims);
         } catch (JwtException | IllegalArgumentException e) {
-            return null;
+            return Optional.empty();
         }
     }
 }
