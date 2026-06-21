@@ -40,9 +40,6 @@ public class SecurityConfig {
                 // Public — customers and kitchen can access these without a token
                 .requestMatchers(HttpMethod.GET,  "/api/menu/**").permitAll()
                 .requestMatchers(HttpMethod.GET,  "/api/categories/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/api/orders/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
-                .requestMatchers(HttpMethod.PATCH,"/api/orders/**").hasAnyRole("KITCHEN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/api/payments/**").permitAll()
                 .requestMatchers(HttpMethod.GET,  "/api/payments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
@@ -53,6 +50,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,   API_MENU_PATH).hasRole(ROLE_MANAGER)
                 .requestMatchers(HttpMethod.DELETE, API_MENU_PATH).hasRole(ROLE_MANAGER)
                 .requestMatchers(HttpMethod.PATCH,  API_MENU_PATH).hasRole(ROLE_MANAGER)
+                    .requestMatchers(HttpMethod.GET,  "/api/orders/**").hasAnyRole("KITCHEN", "MANAGER")
+                    .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
+                    .requestMatchers(HttpMethod.PATCH,"/api/orders/**").hasAnyRole("KITCHEN", "MANAGER")
 
                 // Everything else requires authentication
                 .anyRequest().authenticated()

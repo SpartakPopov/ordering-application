@@ -25,6 +25,7 @@ public class MenuItemEntity {
         this.id = id;
         this.name = name;
         this.price = price;
+
     }
 
     public Integer getId() { return id; }
@@ -37,4 +38,5 @@ public class MenuItemEntity {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public CategoryEntity getCategory() { return category; }
     public void setCategory(CategoryEntity category) { this.category = category; }
+
 }

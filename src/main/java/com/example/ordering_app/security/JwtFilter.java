@@ -26,12 +26,13 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+// every single HTTP request for the backend before it reaches controller
 
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization"); // the header from the frontend
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7); // strip "Bearer " prefix
-            jwtUtils.validateAndParse(token).ifPresent(claims -> {
+        if (header != null && header.startsWith("Bearer ")) { // Bearer for checking if its JWT not another auth type
+            String token = header.substring(7); // strip "Bearer " prefix so its just raw token string
+            jwtUtils.validateAndParse(token).ifPresent(claims -> { // sends for validation to JWTUtils
                 String username = claims.getSubject();
                 String role     = claims.get("role", String.class);
 
@@ -40,12 +41,12 @@ public class JwtFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 username,
                                 null,
-                                List.of(new SimpleGrantedAuthority(role))
+                                List.of(new SimpleGrantedAuthority(role))// permissions
                         );
                 SecurityContextHolder.getContext().setAuthentication(auth);
             });
         }
 
-        chain.doFilter(request, response); // continue to the next filter / controller
+        chain.doFilter(request, response); // passes the request to the next step
     }
 }

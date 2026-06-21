@@ -38,6 +38,15 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+//    @GetMapping("/status/{status}")
+//    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable String status) {
+//        List<OrderDTO> dtos = orderService.getAllOrders().stream()
+//                .filter(order -> status.equals(order.getStatus()))
+//                .map(OrderMapper::toDTO)
+//                .toList();
+//        return ResponseEntity.ok(dtos);
+//    }
+
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderRequest request) {
         Order domain = OrderMapper.toDomain(request);  //convert to domain object

@@ -36,7 +36,7 @@ public class AuthController {
 
         UserEntity user = userRepositoryJPA.findByUsername(username).orElse(null);
 
-        // Same response for wrong username and wrong password — prevents user enumeration
+
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
         }

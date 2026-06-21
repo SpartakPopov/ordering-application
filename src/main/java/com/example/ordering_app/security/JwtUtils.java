@@ -12,14 +12,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 
-@Component // register this as a Spring bean so it can be injected elsewhere
+@Component
 public class JwtUtils {
 
-    private final SecretKey key; // the signing key for token verification
-    private final long expirationMs; // how long a token is valid
+    private final SecretKey key;
+    private final long expirationMs;
 
     public JwtUtils(
-            @Value("${app.jwt-secret}") String secret,  // read secret string from application.properties
+            @Value("${app.jwt-secret}") String secret,
             @Value("${app.jwt-expiration-ms}") long expirationMs) {
         // Key must be at least 256 bits (32 bytes) for HS256
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // convert the raw string into a cryptographic key
@@ -35,12 +35,12 @@ public class JwtUtils {
         Date expiry = new Date(now.getTime() + customExpirationMs);
 
         return Jwts.builder()
-                .subject(username)
-                .claim("role", role)
-                .issuedAt(now)
-                .expiration(expiry)
-                .signWith(key)
-                .compact();
+                .subject(username)      // who this token belongs to
+                .claim("role", role)    // ROLE_MANAGER
+                .issuedAt(now)          // when it was created
+                .expiration(expiry)     // 1 hour from now
+                .signWith(key)          // HS256 signature
+                .compact();             // produce the xxx.yyy.zzz string
     }
 
     public Optional<Claims> validateAndParse(String token) {

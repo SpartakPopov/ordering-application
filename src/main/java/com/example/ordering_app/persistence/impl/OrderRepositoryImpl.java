@@ -68,6 +68,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                 entity.getQuantity(),
                 entity.getSubtotal(),
                 entity.getStatus()
+
         );
     }
 
