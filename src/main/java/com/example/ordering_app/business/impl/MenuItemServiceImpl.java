@@ -36,6 +36,12 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public MenuItem createMenuItem(MenuItem menuItem) {
+        if (menuItem.getName() == null || menuItem.getName().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        if (menuItem.getPrice() == null || menuItem.getPrice() <= 0) {
+            throw new IllegalArgumentException("Price cannot be empty");
+        }
         return menuItemRepository.save(menuItem);
     }
 
